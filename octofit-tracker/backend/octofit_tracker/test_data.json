@@ -1,21 +1,125 @@
 {
-  "users": [
-    {"username": "john_doe", "email": "john@example.com", "password": "password123"},
-    {"username": "jane_smith", "email": "jane@example.com", "password": "password123"}
-  ],
-  "teams": [
-    {"name": "Team Alpha", "members": ["john_doe", "jane_smith"]}
-  ],
-  "activities": [
-    {"user": "john_doe", "activity_type": "Running", "duration": "00:30:00"},
-    {"user": "jane_smith", "activity_type": "Cycling", "duration": "01:00:00"}
-  ],
-  "leaderboard": [
-    {"user": "john_doe", "score": 100},
-    {"user": "jane_smith", "score": 150}
-  ],
-  "workouts": [
-    {"user": "john_doe", "workout_type": "Yoga", "calories_burned": 200, "date": "2025-04-10"},
-    {"user": "jane_smith", "workout_type": "Pilates", "calories_burned": 250, "date": "2025-04-10"}
-  ]
+    "users": [
+        {
+            "username": "thundergod",
+            "email": "thundergod@mhigh.edu",
+            "first_name": "Thunder",
+            "last_name": "God",
+            "password": "thundergodpassword"
+        },
+        {
+            "username": "metalgeek",
+            "email": "metalgeek@mhigh.edu",
+            "first_name": "Metal",
+            "last_name": "Geek",
+            "password": "metalgeekpassword"
+        },
+        {
+            "username": "zerocool",
+            "email": "zerocool@mhigh.edu",
+            "first_name": "Zero",
+            "last_name": "Cool",
+            "password": "zerocoolpassword"
+        },
+        {
+            "username": "crashoverride",
+            "email": "crashoverride@mhigh.edu",
+            "first_name": "Crash",
+            "last_name": "Override",
+            "password": "crashoverridepassword"
+        },
+        {
+            "username": "sleeptoken",
+            "email": "sleeptoken@mhigh.edu",
+            "first_name": "Sleep",
+            "last_name": "Token",
+            "password": "sleeptokenpassword"
+        }
+    ],
+    "teams": [
+        {
+            "name": "Thunder Squad",
+            "description": "The most energetic fitness team",
+            "members": ["thundergod", "metalgeek"]
+        },
+        {
+            "name": "Zero Force",
+            "description": "We start from zero and reach infinity",
+            "members": ["zerocool", "crashoverride"]
+        },
+        {
+            "name": "Dream Team",
+            "description": "Fitness while you sleep",
+            "members": ["sleeptoken", "thundergod"]
+        }
+    ],
+    "activities": [
+        {
+            "type": "running",
+            "duration": 30,
+            "distance": 5.0,
+            "calories": 300,
+            "notes": "Morning run",
+            "username": "thundergod"
+        },
+        {
+            "type": "cycling",
+            "duration": 45,
+            "distance": 15.0,
+            "calories": 400,
+            "notes": "Evening cycle",
+            "username": "metalgeek"
+        },
+        {
+            "type": "swimming",
+            "duration": 60,
+            "distance": 2.0,
+            "calories": 500,
+            "notes": "Pool workout",
+            "username": "zerocool"
+        }
+    ],
+    "workouts": [
+        {
+            "name": "Morning Energizer",
+            "type": "cardio",
+            "difficulty": "beginner",
+            "description": "Start your day with this energizing workout",
+            "duration": 30,
+            "calories_burn": 250
+        },
+        {
+            "name": "Power Hour",
+            "type": "strength",
+            "difficulty": "intermediate",
+            "description": "Full body strength training session",
+            "duration": 60,
+            "calories_burn": 400
+        },
+        {
+            "name": "Ultimate Challenge",
+            "type": "hiit",
+            "difficulty": "advanced",
+            "description": "High intensity interval training",
+            "duration": 45,
+            "calories_burn": 500
+        }
+    ],
+    "leaderboard": [
+        {
+            "team": "Thunder Squad",
+            "period": "weekly",
+            "points": 1000
+        },
+        {
+            "team": "Zero Force",
+            "period": "weekly",
+            "points": 850
+        },
+        {
+            "team": "Dream Team",
+            "period": "weekly",
+            "points": 750
+        }
+    ]
 }

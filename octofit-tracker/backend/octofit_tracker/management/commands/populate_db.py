@@ -1,48 +1,76 @@
 from django.core.management.base import BaseCommand
-from octofit_tracker.models import User, Team, Activity, Leaderboard, Workout
-from pymongo import MongoClient
-from datetime import datetime
+from django.contrib.auth.models import User
+from octofit_tracker.models import Team, Activity, Leaderboard, Workout
+import json
+import os
+from django.conf import settings
 
 class Command(BaseCommand):
-    help = 'Populate the database with test data for users, teams, activity, leaderboard, and workouts'
+    help = 'Populate the database with test data'
 
     def handle(self, *args, **kwargs):
-        # Connect to MongoDB
-        client = MongoClient('mongodb://localhost:27017/')
-        db = client['octofit_db']
-
         # Clear existing data
-        db.users.delete_many({})
-        db.teams.delete_many({})
-        db.activity.delete_many({})
-        db.leaderboard.delete_many({})
-        db.workouts.delete_many({})
+        self.stdout.write('Clearing existing data...')
+        User.objects.all().delete()
+        Team.objects.all().delete()
+        Activity.objects.all().delete()
+        Leaderboard.objects.all().delete()
+        Workout.objects.all().delete()
 
-        # Insert test data
-        users = [
-            {"_id": 1, "username": "john_doe", "email": "john@example.com"},
-            {"_id": 2, "username": "jane_doe", "email": "jane@example.com"}
-        ]
-        db.users.insert_many(users)
+        # Load test data
+        data_file = os.path.join(settings.BASE_DIR, 'octofit_tracker', 'test_data.json')
+        with open(data_file, 'r') as f:
+            test_data = json.load(f)
 
-        teams = [
-            {"_id": 1, "name": "Team A", "members": [1, 2]},
-        ]
-        db.teams.insert_many(teams)
+        # Create users
+        self.stdout.write('Creating users...')
+        users = {}
+        for user_data in test_data['users']:
+            user = User.objects.create_user(
+                username=user_data['username'],
+                email=user_data['email'],
+                password=user_data['password'],
+                first_name=user_data['first_name'],
+                last_name=user_data['last_name']
+            )
+            users[user.username] = user
 
-        activities = [
-            {"_id": 1, "user_id": 1, "activity_type": "Running", "duration": 30, "date": datetime.now()},
-        ]
-        db.activity.insert_many(activities)
+        # Create teams
+        self.stdout.write('Creating teams...')
+        teams = {}
+        for team_data in test_data['teams']:
+            team = Team.objects.create(
+                name=team_data['name'],
+                description=team_data['description']
+            )
+            for username in team_data['members']:
+                team.members.add(users[username])
+            teams[team.name] = team
 
-        leaderboard = [
-            {"_id": 1, "user_id": 1, "score": 100},
-        ]
-        db.leaderboard.insert_many(leaderboard)
+        # Create activities
+        self.stdout.write('Creating activities...')
+        for activity_data in test_data['activities']:
+            Activity.objects.create(
+                user=users[activity_data['username']],
+                type=activity_data['type'],
+                duration=activity_data['duration'],
+                distance=activity_data['distance'],
+                calories=activity_data['calories'],
+                notes=activity_data['notes']
+            )
 
-        workouts = [
-            {"_id": 1, "user_id": 1, "workout_type": "Cardio", "date": datetime.now()},
-        ]
-        db.workouts.insert_many(workouts)
+        # Create workouts
+        self.stdout.write('Creating workouts...')
+        for workout_data in test_data['workouts']:
+            Workout.objects.create(**workout_data)
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated the database with test data.'))
+        # Create leaderboard entries
+        self.stdout.write('Creating leaderboard entries...')
+        for leaderboard_data in test_data['leaderboard']:
+            Leaderboard.objects.create(
+                team=teams[leaderboard_data['team']],
+                period=leaderboard_data['period'],
+                points=leaderboard_data['points']
+            )
+
+        self.stdout.write(self.style.SUCCESS('Successfully populated database'))
