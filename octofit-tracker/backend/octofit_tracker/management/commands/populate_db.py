@@ -15,23 +15,30 @@ class Command(BaseCommand):
 
         # Populate Users
         for user_data in data['users']:
-            User.objects.get_or_create(**user_data)
+            user, created = User.objects.get_or_create(**user_data)
+            if created:
+                user.save()
 
         # Populate Teams
         for team_data in data['teams']:
-            members = team_data.pop('members')
-            team, _ = Team.objects.get_or_create(**team_data)
-            team.save()
-            for member in members:
-                user = User.objects.get(username=member)
-                team.members.add(user)
+            members = []
+            for username in team_data['members']:
+                user = User.objects.filter(username=username).first()
+                if user:
+                    members.append({"username": user.username, "email": user.email})
+            team_data['members'] = members
+            Team.objects.get_or_create(**team_data)
 
         # Populate Activities
         for activity_data in data['activities']:
-            user = User.objects.get(username=activity_data.pop('user'))
+            username = activity_data.pop('user')
+            user = User.objects.filter(username=username).first()
+            if not user:
+                raise ValueError(f"User with username '{username}' does not exist.")
             duration_parts = activity_data.pop('duration').split(':')
             duration = timedelta(hours=int(duration_parts[0]), minutes=int(duration_parts[1]), seconds=int(duration_parts[2]))
-            Activity.objects.get_or_create(user=user, duration=duration, **activity_data)
+            activity = Activity(user=user, duration=duration, **activity_data)
+            activity.save()
 
         # Populate Leaderboard
         for leaderboard_data in data['leaderboard']:
