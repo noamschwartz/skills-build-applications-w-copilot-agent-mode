@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-qm4(3a(465m1le#ye)rvt)n0q_+frb@t#9_6$5co7)*5tcp@sj"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 # Updated ALLOWED_HOSTS to include localhost and Codespace URL
